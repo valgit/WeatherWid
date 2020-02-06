@@ -1,5 +1,5 @@
-# WeatherApp
-A Garmin Connect IQ weather app
+# WeatherWid
+A Garmin Connect IQ weather widget
 
 ## Description
 Features (depending on watch support):
