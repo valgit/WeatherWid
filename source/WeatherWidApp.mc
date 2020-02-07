@@ -18,6 +18,7 @@ class WeatherWidApp extends Application.AppBase {
         if (activityInfo != null) {
             positionInfo = activityInfo.currentLocation;
             quality = activityInfo.currentLocationAccuracy;
+            System.println("pos : "+ positionInfo);
         }
 
         if (positionInfo != null && quality > Position.QUALITY_NOT_AVAILABLE) {

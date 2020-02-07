@@ -66,6 +66,13 @@ class WeatherAppView extends WatchUi.View {
         windbearing = 331;
         weathericon = "clear-day";
         apparentTemperature = 3.22;
+
+        var info = Position.getInfo();
+        var myLocation = info.position.toDegrees();
+    	System.println(myLocation[0]); // latitude (e.g. 38.856147)
+    	System.println(myLocation[1]); // longitude (e.g -94.800953)
+        System.println("position : "+info.accuracy);
+                
     }
 
     // Load your resources here
@@ -97,6 +104,13 @@ class WeatherAppView extends WatchUi.View {
     // Update the view
     function onUpdate(dc) {
     	System.println("onUpdate");
+
+       var info = Position.getInfo();
+        var  myLocation = info.position.toDegrees();
+    	System.println(myLocation[0]); // latitude (e.g. 38.856147)
+    	System.println(myLocation[1]); // longitude (e.g -94.800953)
+        System.println("position : "+info.accuracy);        
+
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
