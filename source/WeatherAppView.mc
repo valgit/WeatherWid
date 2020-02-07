@@ -10,6 +10,9 @@ using Toybox.Time.Gregorian;
 
 class WeatherAppView extends WatchUi.View {
     var units = null;
+    private var latitude = null;
+	private var longitude = null;
+
 	private var width = null;
 	private var height = null;	
 
@@ -34,6 +37,24 @@ class WeatherAppView extends WatchUi.View {
         units =(System.getDeviceSettings().temperatureUnits==System.UNIT_STATUTE) ? "us" : "si";
         //System.println("units in " + units);
         //System.println("lang : " + System.getDeviceSettings().systemLanguage);
+           
+        /* last known position */
+        var positionInfo = Position.getInfo();
+        var myLocation = positionInfo.position.toDegrees();
+        latitude = myLocation[0];
+        longitude = myLocation[1];
+    	System.println(latitude + "," +longitude  );
+    	//System.println(); // longitude (e.g -94.800953)
+        
+        if (positionInfo.accuracy == Position.QUALITY_NOT_AVAILABLE) {
+        	System.println("no position : "+positionInfo.accuracy);
+            latitude = 50.4747;
+            longitude = 3.061;
+        }
+        // debug
+        latitude = 50.4747;
+        longitude = 3.061;
+        
         var myapp = App.getApp();
         lastFetchTime = myapp.getProperty("lastfetchtime");
         if (lastFetchTime != null) {
@@ -67,12 +88,8 @@ class WeatherAppView extends WatchUi.View {
         weathericon = "clear-day";
         apparentTemperature = 3.22;
 
-        var info = Position.getInfo();
-        var myLocation = info.position.toDegrees();
-    	System.println(myLocation[0]); // latitude (e.g. 38.856147)
-    	System.println(myLocation[1]); // longitude (e.g -94.800953)
-        System.println("position : "+info.accuracy);
-                
+		
+     
     }
 
     // Load your resources here
@@ -104,12 +121,6 @@ class WeatherAppView extends WatchUi.View {
     // Update the view
     function onUpdate(dc) {
     	System.println("onUpdate");
-
-       var info = Position.getInfo();
-        var  myLocation = info.position.toDegrees();
-    	System.println(myLocation[0]); // latitude (e.g. 38.856147)
-    	System.println(myLocation[1]); // longitude (e.g -94.800953)
-        System.println("position : "+info.accuracy);        
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
@@ -211,7 +222,7 @@ class WeatherAppView extends WatchUi.View {
                     "exclude" => "[minutely,daily,alerts,flags]"
                     };
 
-            var url = "https://api.darksky.net/forecast/"+appid+"/50.4747,3.061";
+            var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
     
             var options = {
                     :methods => Communications.HTTP_REQUEST_METHOD_GET,

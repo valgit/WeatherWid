@@ -1,33 +1,14 @@
 using Toybox.Application;
 
 class WeatherWidApp extends Application.AppBase {
-    private var lattitude = null;
-	private var longitude = null;
-
+  
     function initialize() {
         AppBase.initialize();
     }
 
     // onStart() is called on application start up
     function onStart(state) {
-        // get last know info
-        var positionInfo = null;
-        var quality = null;
         
-        var activityInfo = Activity.getActivityInfo();
-        if (activityInfo != null) {
-            positionInfo = activityInfo.currentLocation;
-            quality = activityInfo.currentLocationAccuracy;
-            System.println("pos : "+ positionInfo);
-        }
-
-        if (positionInfo != null && quality > Position.QUALITY_NOT_AVAILABLE) {
-          lattitude = positionInfo.toDegrees()[0];
-          longitude = positionInfo.toDegrees()[1];
-          System.println("Refresh location " + lattitude + ", " + longitude + " quality : " + quality);
-        } else {
-            System.println("no know position ?");
-        }
     }
 
     // onStop() is called when your application is exiting
@@ -49,6 +30,7 @@ class WeatherWidApp extends Application.AppBase {
         return (Toybox.System has :ServiceDelegate);
     }
 
+    /*
     function onPosition(info) {
         var myLocation = info.position.toDegrees();
         lattitude = myLocation[0];
@@ -61,5 +43,5 @@ class WeatherWidApp extends Application.AppBase {
         var _locationString = lattitude + "," + longitude;
         return _locationString;
     }
-
+    */
 }
