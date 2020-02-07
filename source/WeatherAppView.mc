@@ -62,7 +62,7 @@ class WeatherAppView extends WatchUi.View {
         } else {
         	freshen = 3600;
         }
-        if (freshen > 30) {
+        if (freshen > 30) { // TODO: check value
                 System.println("(too old) Fetching weather data on startup");                
                 makeCurrentWeatherRequest();
         } else {
@@ -288,7 +288,53 @@ class WeatherAppView extends WatchUi.View {
         return rose[index];
     }    
 
-   function receiveWeather(responseCode, data) {
+    // parse JSON weather data
+    function parseWeather(data) {
+        //mMessage = "";
+        // currently => {visibility=>16.093000, windBearing=>260, precipIntensity=>0, 
+        // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
+        // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
+        // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
+        summary = data["currently"]["summary"];
+        pressure = data["currently"]["pressure"];
+        temperature = data["currently"]["temperature"];
+        windspeed = data["currently"]["windSpeed"];
+        windbearing = data["currently"]["windBearing"];
+        weathericon = data["currently"]["icon"];
+		proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["currently"]["apparentTemperature"];
+				 
+        // check hourly data
+        // first slot is actual time then next 24 hours
+        System.println("next : "+data["hourly"]["summary"]);
+        var _hdata = data["hourly"]["data"]; // table ?
+        /*
+        var _time=new Time.Moment(data["hourly"]["time"]);
+        var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+        System.println(_current.hour+":"+_current.min);
+        */
+        // Print the arguments duplicated and returned 
+        /*
+        var keys = _hdata.keys();
+        for( var i = 0; i < keys.size(); i++ ) {
+            //mMessage += Lang.format("$1$: $2$\n", [keys[i], args[keys[i]]]);
+            System.println(keys[i] + " => " + data[keys[i]]);
+        }
+        */
+
+        var _time;
+        var _current;
+        for(var i = 0; i<25;i++) {
+            //System.println(i+" : "+_hdata[i]);
+            _time=new Time.Moment(_hdata[i]["time"]);
+            _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+            System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
+            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+_hdata[i]["precipProbability"]);
+        }
+    
+    }
+
+    function receiveWeather(responseCode, data) {
    		System.println("receiveWeather");
         if (responseCode == 200) {
              if (data instanceof Lang.String && data.equals("Forbidden")) {
@@ -296,58 +342,15 @@ class WeatherAppView extends WatchUi.View {
                 System.println("wrong API key");
                 //Background.exit(dict);
             } else {
-                if (data instanceof Dictionary) {                
-                
-                // TODO: persist receive data
-                var myapp = App.getApp();
-                //lastData = data;
-                lastFetchTime = Time.now().value();
-                //myapp.setProperty("lastdata",lastData);
-                myapp.setProperty("lastfetchtime",lastFetchTime);
-
-                //mMessage = "";
-                // currently => {visibility=>16.093000, windBearing=>260, precipIntensity=>0, 
-                // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
-                // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
-                // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
-                summary = data["currently"]["summary"];
-                pressure = data["currently"]["pressure"];
-                temperature = data["currently"]["temperature"];
-                windspeed = data["currently"]["windSpeed"];
-                windbearing = data["currently"]["windBearing"];
-                weathericon = data["currently"]["icon"];
-				proba = data["currently"]["precipProbability"];
-				apparentTemperature = data["currently"]["apparentTemperature"];
-				 
-                // check hourly data
-                // first slot is actual time then next 24 hours
-                System.println("next : "+data["hourly"]["summary"]);
-                var _hdata = data["hourly"]["data"]; // table ?
-                /*
-                var _time=new Time.Moment(data["hourly"]["time"]);
-                var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
-                System.println(_current.hour+":"+_current.min);
-                */
-                // Print the arguments duplicated and returned 
-                /*
-                var keys = _hdata.keys();
-                for( var i = 0; i < keys.size(); i++ ) {
-
-                    //mMessage += Lang.format("$1$: $2$\n", [keys[i], args[keys[i]]]);
-                    System.println(keys[i] + " => " + data[keys[i]]);
-                }
-                */
-
-                var _time;
-                var _current;
-                for(var i = 0; i<25;i++) {
-                    //System.println(i+" : "+_hdata[i]);
-                    _time=new Time.Moment(_hdata[i]["time"]);
-                	_current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
-                	System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
-                	System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+_hdata[i]["precipProbability"]);
-                }
-            }   
+                if (data instanceof Dictionary) {                                    
+                    // TODO: persist receive data
+                    var myapp = App.getApp();
+                    //lastData = data;
+                    lastFetchTime = Time.now().value();
+                    //myapp.setProperty("lastdata",lastData);
+                    myapp.setProperty("lastfetchtime",lastFetchTime);
+                    parseWeather(data);
+                }   
             }
         } else {
             System.println("Current weather response code " + responseCode);
@@ -356,25 +359,7 @@ class WeatherAppView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
-//  map icon type to font char
-/*
-    var iconIds = {   
-        "clear-day" => "A", 
-        "clear-night" => "B", 
-        "rain" => "C", 
-        "snow" => "D", 
-        "sleet" => "E", 
-        "wind" => "F", 
-        "fog" => "G", 
-        "cloudy" => "H", 
-        "partly-cloudy-day" => "I",  
-        "partly-cloudy-night" => "J", 
-        "hail" => "K", 
-        "thunderstorm" => "L", 
-        "tornado" => "M"
-    }
-  */
-
+    // map icon name to png
     var iconIds = { 
         "clear-day" => :clear_day,
         "clear-night" => :clear_night,
