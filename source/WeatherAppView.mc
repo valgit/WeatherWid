@@ -70,8 +70,8 @@ class WeatherAppView extends WatchUi.View {
         } else {
                 //httpCode = 200;
                 System.println("using current weather data");
-                var data = myapp.getProperty("lastdata");
-                parseWeather(data);
+                //var data = myapp.getProperty("lastdata");
+                //parseWeather(data);
         }      
 
         // debug
@@ -360,7 +360,7 @@ class WeatherAppView extends WatchUi.View {
                     var myapp = App.getApp();
                     var lastData = data;
                     lastFetchTime = Time.now().value();
-                    myapp.setProperty("lastdata",lastData);
+                    //myapp.setProperty("lastdata",lastData);
                     myapp.setProperty("lastfetchtime",lastFetchTime);
                     parseWeather(data);
                 }   
@@ -399,8 +399,9 @@ class WeatherAppView extends WatchUi.View {
   }
 
   function getHour(date) {
-    var modulus = date % 3600;
-    var hour = date - modulus;
+    var _time=new Time.Moment(date);
+    var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+    var hour = _current.hour;
     return hour;
   }
 }
