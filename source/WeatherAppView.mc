@@ -28,7 +28,6 @@ class WeatherAppView extends WatchUi.View {
     private var weathericon = null;
 	private var apparentTemperature = null;
     private var proba = null;
-    private var freshen = null;
     
     function initialize() {
     	System.println("initialize");
@@ -56,9 +55,12 @@ class WeatherAppView extends WatchUi.View {
         longitude = 3.061;
         
         var myapp = App.getApp();
+        var freshen = null;
         lastFetchTime = myapp.getProperty("lastfetchtime");
         if (lastFetchTime != null) {
-        	freshen = Time.now().value() - lastFetchTime;
+            var _now = Time.now().value();
+        	freshen = _now - lastFetchTime;
+            System.println("now h : "+getHour(_now)+" / last : "+getHour(lastFetchTime));
         } else {
         	freshen = 3600;
         }
@@ -68,6 +70,8 @@ class WeatherAppView extends WatchUi.View {
         } else {
                 //httpCode = 200;
                 System.println("using current weather data");
+                var data = myapp.getProperty("lastdata");
+                parseWeather(data);
         }      
 
         // debug
@@ -80,6 +84,7 @@ class WeatherAppView extends WatchUi.View {
         weathericon = "cloudy";
         apparentTemperature = 8;
         */
+        /*
         summary = "Ciel Dégagé";
         pressure = 1036.3;
         temperature = 3.22;
@@ -87,7 +92,7 @@ class WeatherAppView extends WatchUi.View {
         windbearing = 331;
         weathericon = "clear-day";
         apparentTemperature = 3.22;
-
+    */
 		
      
     }
@@ -134,6 +139,14 @@ class WeatherAppView extends WatchUi.View {
         //var timeString = Lang.format("$1$:$2$:$3$", [clockTime.hour, clockTime.min.format("%02d"), clockTime.sec.format("%02d")]);		
 		
 		//dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_SMALL,timeString,Gfx.TEXT_JUSTIFY_CENTER);
+        var myapp = App.getApp();
+        var freshen = 0;
+        var lastFetchTime = myapp.getProperty("lastfetchtime");
+        if (lastFetchTime != null) {
+        	freshen = Time.now().value() - lastFetchTime;
+        } else {
+        	freshen = -1;
+        }
         var _timeString = "last update "+freshen;
         dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_SMALL,_timeString,Gfx.TEXT_JUSTIFY_CENTER);
 
@@ -345,9 +358,9 @@ class WeatherAppView extends WatchUi.View {
                 if (data instanceof Dictionary) {                                    
                     // TODO: persist receive data
                     var myapp = App.getApp();
-                    //lastData = data;
+                    var lastData = data;
                     lastFetchTime = Time.now().value();
-                    //myapp.setProperty("lastdata",lastData);
+                    myapp.setProperty("lastdata",lastData);
                     myapp.setProperty("lastfetchtime",lastFetchTime);
                     parseWeather(data);
                 }   
@@ -383,5 +396,11 @@ class WeatherAppView extends WatchUi.View {
     icon.setLocation(x, y);
     icon.draw(dc);
     //dc.drawText(x,y,Gfx.FONT_SMALL,iconIds[symbol],Gfx.TEXT_JUSTIFY_CENTER);    
+  }
+
+  function getHour(date) {
+    var modulus = date % 3600;
+    var hour = date - modulus;
+    return hour;
   }
 }
