@@ -17,6 +17,8 @@ class WeatherAppView extends WatchUi.View {
 	private var height = null;	
 
 	//private var mTimer = null;
+    private var _status = null;
+
 	//private var lastData;
     private var lastFetchTime = null;
 
@@ -61,16 +63,16 @@ class WeatherAppView extends WatchUi.View {
             var _now = Time.now().value();
         	//freshen = _now - lastFetchTime;
             //System.println("now h : "+getHour(_now)+" / last : "+getHour(lastFetchTime));
-            freshen = getHour(_now) - getHour(lastFetchTime);
+            freshen = getHour(_now) - getHour(lastFetchTime);            
         } else {
         	freshen = 24;
         }
         // more than 1 hour ?
+        _status = 0;
         if (freshen >= 1) { // TODO: check value
                 System.println("(too old) Fetching weather data on startup " + freshen);                
-                makeCurrentWeatherRequest();
-        } else {
-                //httpCode = 200;
+                makeCurrentWeatherRequest();                
+        } else {                
                 System.println("using current weather data");
                 //var data = myapp.getProperty("lastdata");
                 //parseWeather(data);
@@ -153,6 +155,9 @@ class WeatherAppView extends WatchUi.View {
         var _timeString = "last update "+freshen.format("%.0f") + " m";
         dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_XTINY,_timeString,Gfx.TEXT_JUSTIFY_CENTER);
 
+        if (_status != 0) {
+            dc.drawText(width * 0.5, height * 0.5,Gfx.FONT_XTINY,"waiting data...",Gfx.TEXT_JUSTIFY_CENTER);
+        }
 		if (summary != null) {
             drawIcon(dc,width * 0.5 - 60,height * 0.5 - 60 ,weathericon);// 32 pix
 
@@ -188,30 +193,13 @@ class WeatherAppView extends WatchUi.View {
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
                 
-            /*
-            System.println("icon: "+ weathericon);
-            drawIcon(dc,width/2-90,45,weathericon);// 32 pix
-
-            dc.drawText(width/2,50,Gfx.FONT_TINY,summary,Gfx.TEXT_JUSTIFY_CENTER);
-
-            var _tempstr = "T : " + temperature.format("%.0f") + "°";
-            dc.drawText(width/2-60,70,Gfx.FONT_XTINY,_tempstr,Gfx.TEXT_JUSTIFY_CENTER);
-
-            _tempstr = "Feels " + apparentTemperature.format("%.0f") + "°";
-            dc.drawText(width/2-60,75,Gfx.FONT_XTINY,_tempstr,Gfx.TEXT_JUSTIFY_CENTER);
-
-            var _pressstr = "P : " + pressure.format("%.0f") + " hPa";
-            dc.drawText(width/2+50,70,Gfx.FONT_XTINY,_pressstr,Gfx.TEXT_JUSTIFY_CENTER);
-
-            _tempstr = "W:" + formatHeading(windbearing) + " @ " + formatWindSpeed(windspeed) + "nd / " + formatBeaufort(windspeed);
-            dc.drawText(width/2-50,100,Gfx.FONT_XTINY,_tempstr,Gfx.TEXT_JUSTIFY_CENTER);
-            
+            /*          
             //var _bfs = formatBeaufort(windspeed);
             //System.println("speed : "+ _bfs );
             */
         }
     
-        //gridOverlay(dc);
+        gridOverlay(dc);
     }
 
     // Called when this View is removed from the screen. Save the
@@ -227,10 +215,21 @@ class WeatherAppView extends WatchUi.View {
         dc.setPenWidth(1);		
         dc.setColor(0xFFFFFF, 0xFFFFFF);
         var grid = 32;		
+        /*
         for (var i=1; i< grid; i+=1){ 
             dc.drawLine (0, width*i/grid, width, height*i/grid); 					
             dc.drawLine (width*i/grid, 0, width*i/grid, height); 
-        }    
+        } 
+        */
+        dc.drawLine (0, height*0.25, width, height*0.25); 
+        dc.drawLine (0, height*0.5, width, height*0.5); 
+        dc.drawLine (0, height*0.75, width, height*0.75); 
+
+		dc.setColor(0xFFFF00, 0xFFFF00);
+        dc.drawLine (width * 0.25, 0, width * 0.25, height); 
+        dc.drawLine (width * 0.5, 0, width * 0.5, height); 
+        dc.drawLine (width * 0.75, 0, width * 0.75, height); 
+        //System.println("wh : "+ width * 0.25 + " px , hh : " + height*0.25 + " px");
     }
 
  function makeCurrentWeatherRequest() {
@@ -259,10 +258,10 @@ class WeatherAppView extends WatchUi.View {
                     params,
                     options,
                     method(:receiveWeather));
+            _status = 1;
         } else {
             System.println("no phone connection");
-        }
-        // requesting : httpCode = -1;
+        }        
         WatchUi.requestUpdate();
     }
 
@@ -374,12 +373,17 @@ class WeatherAppView extends WatchUi.View {
                     lastFetchTime = Time.now().value();
                     //myapp.setProperty("lastdata",lastData);
                     myapp.setProperty("lastfetchtime",lastFetchTime);
+                    _status = 0;
                     parseWeather(data);
                 }   
             }
         } else {
             System.println("Current weather response code " + responseCode);
-            //maybe null !  + " message " + data.get("message"));         
+            //maybe null !  + " message " + data.get("message"));   
+            //App.Storage.deleteValue(  
+            var myapp = App.getApp();    
+            lastFetchTime = null;                  
+            myapp.setProperty("lastfetchtime",lastFetchTime);
         }
         WatchUi.requestUpdate();
     }
