@@ -74,9 +74,9 @@ class WeatherAppView extends WatchUi.View {
                 makeCurrentWeatherRequest();                
         } else {                
                 System.println("using current weather data");
-                //var data = myapp.getProperty("lastdata");
-                //parseWeather(data);
-                makeCurrentWeatherRequest();
+                var data = myapp.Storage.getValue("lastdata");
+                parseWeather(data);
+                //makeCurrentWeatherRequest();
         }      
 
         // debug
@@ -352,8 +352,8 @@ class WeatherAppView extends WatchUi.View {
             _time=new Time.Moment(_hdata[i]["time"]);
             _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
             System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
-            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+_hdata[i]["precipProbability"] +
-            	"summary: " + _hdata[i]["summary"]);
+            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+(_hdata[i]["precipProbability"] * 100)+
+            	" summary: " + _hdata[i]["summary"]);
         }
     
     }
@@ -371,7 +371,7 @@ class WeatherAppView extends WatchUi.View {
                     var myapp = App.getApp();
                     var lastData = data;
                     lastFetchTime = Time.now().value();
-                    //myapp.setProperty("lastdata",lastData);
+                    myapp.Storage.setValue("lastdata",lastData);
                     myapp.setProperty("lastfetchtime",lastFetchTime);
                     _status = 0;
                     parseWeather(data);
@@ -411,6 +411,8 @@ class WeatherAppView extends WatchUi.View {
     var icon = getIcon(symbol);
     icon.setLocation(x, y);
     icon.draw(dc);
+    var dim = icon.getDimensions();
+    System.println("WxH : "+dim[0] + ","+dim[1]);
     //dc.drawText(x,y,Gfx.FONT_SMALL,iconIds[symbol],Gfx.TEXT_JUSTIFY_CENTER);    
   }
 
