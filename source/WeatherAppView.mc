@@ -74,6 +74,7 @@ class WeatherAppView extends WatchUi.View {
                 System.println("using current weather data");
                 //var data = myapp.getProperty("lastdata");
                 //parseWeather(data);
+                makeCurrentWeatherRequest();
         }      
 
         // debug
@@ -149,7 +150,7 @@ class WeatherAppView extends WatchUi.View {
         } else {
         	freshen = -1;
         }
-        var _timeString = "last update "+freshen.format("%.0f");
+        var _timeString = "last update "+freshen.format("%.0f") + " m";
         dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_XTINY,_timeString,Gfx.TEXT_JUSTIFY_CENTER);
 
 		if (summary != null) {
@@ -179,6 +180,14 @@ class WeatherAppView extends WatchUi.View {
                 Gfx.FONT_XTINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
+                
+            y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
+            _tempstr = pressure.format("%.0f") + " hPa";            
+            dc.drawText(width * 0.25,y,
+                Gfx.FONT_XTINY,
+                _tempstr,
+                Gfx.TEXT_JUSTIFY_LEFT);
+                
             /*
             System.println("icon: "+ weathericon);
             drawIcon(dc,width/2-90,45,weathericon);// 32 pix
@@ -344,7 +353,8 @@ class WeatherAppView extends WatchUi.View {
             _time=new Time.Moment(_hdata[i]["time"]);
             _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
             System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
-            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+_hdata[i]["precipProbability"]);
+            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+_hdata[i]["precipProbability"] +
+            	"summary: " + _hdata[i]["summary"]);
         }
     
     }
