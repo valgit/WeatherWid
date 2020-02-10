@@ -59,13 +59,15 @@ class WeatherAppView extends WatchUi.View {
         lastFetchTime = myapp.getProperty("lastfetchtime");
         if (lastFetchTime != null) {
             var _now = Time.now().value();
-        	freshen = _now - lastFetchTime;
-            System.println("now h : "+getHour(_now)+" / last : "+getHour(lastFetchTime));
+        	//freshen = _now - lastFetchTime;
+            //System.println("now h : "+getHour(_now)+" / last : "+getHour(lastFetchTime));
+            freshen = getHour(_now) - getHour(lastFetchTime);
         } else {
-        	freshen = 3600;
+        	freshen = 24;
         }
-        if (freshen > 30) { // TODO: check value
-                System.println("(too old) Fetching weather data on startup");                
+        // more than 1 hour ?
+        if (freshen >= 1) { // TODO: check value
+                System.println("(too old) Fetching weather data on startup " + freshen);                
                 makeCurrentWeatherRequest();
         } else {
                 //httpCode = 200;
@@ -143,12 +145,12 @@ class WeatherAppView extends WatchUi.View {
         var freshen = 0;
         var lastFetchTime = myapp.getProperty("lastfetchtime");
         if (lastFetchTime != null) {
-        	freshen = Time.now().value() - lastFetchTime;
+        	freshen = (Time.now().value() - lastFetchTime)/60; // minutes
         } else {
         	freshen = -1;
         }
-        var _timeString = "last update "+freshen;
-        dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_SMALL,_timeString,Gfx.TEXT_JUSTIFY_CENTER);
+        var _timeString = "last update "+freshen.format("%.0f");
+        dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_XTINY,_timeString,Gfx.TEXT_JUSTIFY_CENTER);
 
 		if (summary != null) {
             drawIcon(dc,width * 0.5 - 60,height * 0.5 - 60 ,weathericon);// 32 pix
@@ -399,9 +401,12 @@ class WeatherAppView extends WatchUi.View {
   }
 
   function getHour(date) {
+      /*
     var _time=new Time.Moment(date);
     var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
     var hour = _current.hour;
+    */
+    var hour = Math.floor(date/3600);
     return hour;
   }
 }
