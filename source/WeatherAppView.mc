@@ -30,7 +30,8 @@ class WeatherAppView extends WatchUi.View {
     private var weathericon = null;
 	private var apparentTemperature = null;
     private var proba = null;
-    
+    private var writer = null;
+
     function initialize() {
     	System.println("initialize");
         View.initialize();
@@ -58,6 +59,8 @@ class WeatherAppView extends WatchUi.View {
         
         var myapp = App.getApp();
         var freshen = null;
+        // TODO : check if (Toybox.Application has :Storage && Toybox.Application.Storage has :setValue)
+        //
         lastFetchTime = myapp.Storage.getValue("lastfetchtime");
         if (lastFetchTime != null) {
             var _now = Time.now().value();
@@ -75,9 +78,9 @@ class WeatherAppView extends WatchUi.View {
         } else {                
                 System.println("using current weather data");
                 var data = myapp.Storage.getValue("lastdata");
-                parseWeather(data);
+                parseCurrentWeather(data);
                 //makeCurrentWeatherRequest();
-        }      
+        }              
 
         // debug
         /*
@@ -115,6 +118,8 @@ class WeatherAppView extends WatchUi.View {
         //setLayout(Rez.Layouts.MainLayout(dc));
         width=dc.getWidth();
         height=dc.getHeight();
+
+        writer = new WrapText();
     }
 
     // Called when this View is brought to the foreground. Restore
@@ -183,7 +188,9 @@ class WeatherAppView extends WatchUi.View {
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
 
-            dc.drawText(width * 0.25,height * 0.75 ,Gfx.FONT_TINY,summary,Gfx.TEXT_JUSTIFY_LEFT);
+            //dc.drawText(width * 0.25,height * 0.75 ,Gfx.FONT_TINY,summary,Gfx.TEXT_JUSTIFY_LEFT);
+            var posY = height * 0.75;
+            posY = writer.writeLines(dc, summary, Gfx.FONT_TINY, posY);
 
             //y = height * 0.5;
             y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
@@ -201,7 +208,8 @@ class WeatherAppView extends WatchUi.View {
                 Gfx.FONT_XTINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
-                
+
+            writer.testFit(posY);  // start scrolling ?
             /*          
             //var _bfs = formatBeaufort(windspeed);
             //System.println("speed : "+ _bfs );
@@ -251,6 +259,39 @@ class WeatherAppView extends WatchUi.View {
             var params = {
                     "units" => units,
                     "lang" => "fr",
+                    "exclude" => "[minutely,hourly,daily,alerts,flags]"
+                    };
+
+            var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
+    
+            var options = {
+                    :methods => Communications.HTTP_REQUEST_METHOD_GET,
+                    :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
+                    :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            };
+        
+            Communications.makeWebRequest(
+                    url,
+                    params,
+                    options,
+                    method(:receiveCurrentWeather));
+            _status = 1;
+        } else {
+            System.println("no phone connection");
+        }        
+        WatchUi.requestUpdate();
+    }
+
+function makeHourlyWeatherRequest() {
+ 		System.println("makeCurrentWeatherRequest");
+        if (System.getDeviceSettings().phoneConnected) {
+
+            var appid = getAPIkey();              
+        
+            // currently,  daily, hourly
+            var params = {
+                    "units" => units,
+                    "lang" => "fr",
                     "exclude" => "[minutely,daily,alerts,flags]"
                     };
 
@@ -266,13 +307,14 @@ class WeatherAppView extends WatchUi.View {
                     url,
                     params,
                     options,
-                    method(:receiveWeather));
+                    method(:receiveHourlyWeather));
             _status = 1;
         } else {
             System.println("no phone connection");
         }        
         WatchUi.requestUpdate();
     }
+
 
     // speed is in m/s
   	function formatWindSpeed(speed) {
@@ -320,9 +362,25 @@ class WeatherAppView extends WatchUi.View {
         return rose[index];
     }    
 
+    // parse JSON weather data    
+    function parseCurrentWeather(data) {
+        // currently => {visibility=>16.093000, windBearing=>260, precipIntensity=>0, 
+        // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
+        // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
+        // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
+        summary = data["currently"]["summary"];
+        pressure = data["currently"]["pressure"];
+        temperature = data["currently"]["temperature"];
+        windspeed = data["currently"]["windSpeed"];
+        windbearing = data["currently"]["windBearing"];
+        weathericon = data["currently"]["icon"];
+		proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["currently"]["apparentTemperature"];				   
+    
+    }
+
     // parse JSON weather data
-    function parseWeather(data) {
-        //mMessage = "";
+    function parseHourlyWeather(data) {
         // currently => {visibility=>16.093000, windBearing=>260, precipIntensity=>0, 
         // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
         // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
@@ -367,8 +425,8 @@ class WeatherAppView extends WatchUi.View {
     
     }
 
-    function receiveWeather(responseCode, data) {
-   		System.println("receiveWeather");
+    function receiveCurrentWeather(responseCode, data) {
+   		System.println("receiveCurrentWeather");
         if (responseCode == 200) {
              if (data instanceof Lang.String && data.equals("Forbidden")) {
                 var dict = { "msg" => "WRONG KEY" };
@@ -383,7 +441,37 @@ class WeatherAppView extends WatchUi.View {
                     myapp.Storage.setValue("lastdata",lastData);
                     myapp.Storage.setValue("lastfetchtime",lastFetchTime);
                     _status = 0;
-                    parseWeather(data);
+                    parseCurrentWeather(data);
+                }   
+            }
+        } else {
+            System.println("Current weather response code " + responseCode);
+            //maybe null !  + " message " + data.get("message"));   
+            //App.Storage.deleteValue(  
+            var myapp = App.getApp();    
+            lastFetchTime = null;                  
+            myapp.Storage.setValue("lastfetchtime",lastFetchTime);
+        }
+        WatchUi.requestUpdate();
+    }
+
+    function receiveHourlyWeather(responseCode, data) {
+   		System.println("receiveHourlyWeather");
+        if (responseCode == 200) {
+             if (data instanceof Lang.String && data.equals("Forbidden")) {
+                var dict = { "msg" => "WRONG KEY" };
+                System.println("wrong API key");
+                //Background.exit(dict);
+            } else {
+                if (data instanceof Dictionary) {                                    
+                    // TODO: persist receive data
+                    var myapp = App.getApp();
+                    var lastData = data;
+                    lastFetchTime = Time.now().value();
+                    myapp.Storage.setValue("lastdata",lastData);
+                    myapp.Storage.setValue("lastfetchtime",lastFetchTime);
+                    _status = 0;
+                    parseHourlyWeather(data);
                 }   
             }
         } else {
@@ -420,8 +508,8 @@ class WeatherAppView extends WatchUi.View {
     var icon = getIcon(symbol);
     icon.setLocation(x, y);
     icon.draw(dc);
-    var dim = icon.getDimensions();
-    System.println("WxH : "+dim[0] + ","+dim[1]);
+    //var dim = icon.getDimensions();
+    //System.println("WxH : "+dim[0] + ","+dim[1]);
     //dc.drawText(x,y,Gfx.FONT_SMALL,iconIds[symbol],Gfx.TEXT_JUSTIFY_CENTER);    
   }
 
