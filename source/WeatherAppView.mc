@@ -58,7 +58,7 @@ class WeatherAppView extends WatchUi.View {
         
         var myapp = App.getApp();
         var freshen = null;
-        lastFetchTime = myapp.getProperty("lastfetchtime");
+        lastFetchTime = myapp.Storage.getValue("lastfetchtime");
         if (lastFetchTime != null) {
             var _now = Time.now().value();
         	//freshen = _now - lastFetchTime;
@@ -98,7 +98,15 @@ class WeatherAppView extends WatchUi.View {
         weathericon = "clear-day";
         apparentTemperature = 3.22;
     */
-		
+     	summary = "Vent moyen commençant dans la matinée, se prolongeant jusqu’à ce soir.";
+        pressure = 1008.9;
+        temperature = 5.02;
+        windspeed = 8.85;
+        windbearing = 261;
+        weathericon = "clear-day";
+        apparentTemperature = -0.06;
+        proba = 0.06;
+		_status = 0;
      
     }
 
@@ -146,7 +154,7 @@ class WeatherAppView extends WatchUi.View {
 		//dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_SMALL,timeString,Gfx.TEXT_JUSTIFY_CENTER);
         var myapp = App.getApp();
         var freshen = 0;
-        var lastFetchTime = myapp.getProperty("lastfetchtime");
+        var lastFetchTime = myapp.Storage.getValue("lastfetchtime");
         if (lastFetchTime != null) {
         	freshen = (Time.now().value() - lastFetchTime)/60; // minutes
         } else {
@@ -159,7 +167,7 @@ class WeatherAppView extends WatchUi.View {
             dc.drawText(width * 0.5, height * 0.5,Gfx.FONT_XTINY,"waiting data...",Gfx.TEXT_JUSTIFY_CENTER);
         }
 		if (summary != null) {
-            drawIcon(dc,width * 0.5 - 60,height * 0.5 - 60 ,weathericon);// 32 pix
+            drawIcon(dc,width * 0.5 - 64,height * 0.5 - 64 ,weathericon);// 64 pix
 
             var y = height * 0.25;
             var _tempstr = temperature.format("%.0f") + "°";
@@ -187,7 +195,8 @@ class WeatherAppView extends WatchUi.View {
                 Gfx.TEXT_JUSTIFY_LEFT);
                 
             y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
-            _tempstr = pressure.format("%.0f") + " hPa";            
+            var _proba = proba * 100;
+            _tempstr = pressure.format("%.0f") + " hPa Hum: " + _proba.format("%.0f")+ " %";
             dc.drawText(width * 0.25,y,
                 Gfx.FONT_XTINY,
                 _tempstr,
@@ -199,7 +208,7 @@ class WeatherAppView extends WatchUi.View {
             */
         }
     
-        gridOverlay(dc);
+        //gridOverlay(dc);
     }
 
     // Called when this View is removed from the screen. Save the
@@ -372,7 +381,7 @@ class WeatherAppView extends WatchUi.View {
                     var lastData = data;
                     lastFetchTime = Time.now().value();
                     myapp.Storage.setValue("lastdata",lastData);
-                    myapp.setProperty("lastfetchtime",lastFetchTime);
+                    myapp.Storage.setValue("lastfetchtime",lastFetchTime);
                     _status = 0;
                     parseWeather(data);
                 }   
@@ -383,7 +392,7 @@ class WeatherAppView extends WatchUi.View {
             //App.Storage.deleteValue(  
             var myapp = App.getApp();    
             lastFetchTime = null;                  
-            myapp.setProperty("lastfetchtime",lastFetchTime);
+            myapp.Storage.setValue("lastfetchtime",lastFetchTime);
         }
         WatchUi.requestUpdate();
     }
