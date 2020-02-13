@@ -76,7 +76,7 @@ class WeatherAppView extends WatchUi.View {
                 makeCurrentWeatherRequest();                
         } else {                
                 System.println("using current weather data");
-                var data = myapp.Storage.getValue("lastdata");
+                var data = getLastData();
                 parseCurrentWeather(data);
                 //makeCurrentWeatherRequest();
         }              
@@ -100,7 +100,7 @@ class WeatherAppView extends WatchUi.View {
         weathericon = "clear-day";
         apparentTemperature = 3.22;
     */
-    
+    /*
      	summary = "Vent moyen commençant dans la matinée, se prolongeant jusqu’à ce soir.";
         pressure = 1008.9;
         temperature = 5.02;
@@ -110,7 +110,7 @@ class WeatherAppView extends WatchUi.View {
         apparentTemperature = -0.06;
         proba = 0.06;
 		_status = 0;
-	
+	*/
      
     }
 
@@ -394,7 +394,7 @@ function makeHourlyWeatherRequest() {
                     var myapp = App.getApp();
                     var lastData = data;
                     lastFetchTime = Time.now().value();
-                    myapp.Storage.setValue("lastdata",lastData);
+                    setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     _status = 0;
                     parseCurrentWeather(data);
@@ -424,7 +424,7 @@ function makeHourlyWeatherRequest() {
                     var myapp = App.getApp();
                     var lastData = data;
                     lastFetchTime = Time.now().value();
-                    myapp.Storage.setValue("lastdata",lastData);
+                    setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     _status = 0;
                     parseHourlyWeather(data);

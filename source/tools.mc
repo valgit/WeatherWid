@@ -4,6 +4,7 @@
 using Toybox.Application as App;
 using Toybox.Math; 
 
+/* handle last refresh date with SDK version */
 function getLastRefresh() {
     var myapp = App.getApp();
     var lastFetchTime = null;
@@ -26,6 +27,28 @@ function setLastRefresh(lastFetchTime) {
     }
 }
 
+/* handle last data date with SDK version */
+function getLastData() {
+    var myapp = App.getApp();
+    var data = null;
+    if (Toybox.Application has :Storage && Toybox.Application.Storage has :setValue) {
+            data = myapp.Storage.getValue("lastdata");
+    } else {
+            data = myapp.getProperty("lastdata");
+    }
+
+    return data;
+}
+
+function setLastData(data) {
+    var myapp = App.getApp();
+
+    if (Toybox.Application has :Storage && Toybox.Application.Storage has :setValue) {            
+            myapp.Storage.setValue("lastdata",data);
+    } else {
+            myapp.setProperty("lastdata",data);
+    }
+}
 
  // speed is in m/s
 function formatWindSpeed(speed) {
