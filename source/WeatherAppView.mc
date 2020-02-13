@@ -101,6 +101,7 @@ class WeatherAppView extends WatchUi.View {
         weathericon = "clear-day";
         apparentTemperature = 3.22;
     */
+    /*
      	summary = "Vent moyen commençant dans la matinée, se prolongeant jusqu’à ce soir.";
         pressure = 1008.9;
         temperature = 5.02;
@@ -110,6 +111,7 @@ class WeatherAppView extends WatchUi.View {
         apparentTemperature = -0.06;
         proba = 0.06;
 		_status = 0;
+		*/
      
     }
 
