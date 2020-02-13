@@ -76,7 +76,7 @@ class WeatherAppView extends WatchUi.View {
                 makeCurrentWeatherRequest();                
         } else {                
                 System.println("using current weather data");
-                var data = myapp.Storage.getValue("lastdata");
+                var data = getLastData();
                 parseCurrentWeather(data);
                 //makeCurrentWeatherRequest();
         }              
@@ -110,8 +110,8 @@ class WeatherAppView extends WatchUi.View {
         apparentTemperature = -0.06;
         proba = 0.06;
 		_status = 0;
-	
-     */
+	*/
+     
     }
 
     // Load your resources here
@@ -394,7 +394,7 @@ function makeHourlyWeatherRequest() {
                     var myapp = App.getApp();
                     var lastData = data;
                     lastFetchTime = Time.now().value();
-                    myapp.Storage.setValue("lastdata",lastData);
+                    setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     _status = 0;
                     parseCurrentWeather(data);
@@ -424,7 +424,7 @@ function makeHourlyWeatherRequest() {
                     var myapp = App.getApp();
                     var lastData = data;
                     lastFetchTime = Time.now().value();
-                    myapp.Storage.setValue("lastdata",lastData);
+                    setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     _status = 0;
                     parseHourlyWeather(data);
