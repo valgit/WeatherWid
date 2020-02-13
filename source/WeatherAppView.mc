@@ -101,6 +101,7 @@ class WeatherAppView extends WatchUi.View {
         weathericon = "clear-day";
         apparentTemperature = 3.22;
     */
+    
      	summary = "Vent moyen commençant dans la matinée, se prolongeant jusqu’à ce soir.";
         pressure = 1008.9;
         temperature = 5.02;
@@ -190,7 +191,7 @@ class WeatherAppView extends WatchUi.View {
 
             //dc.drawText(width * 0.25,height * 0.75 ,Gfx.FONT_TINY,summary,Gfx.TEXT_JUSTIFY_LEFT);
             var posY = height * 0.75;
-            posY = writer.writeLines(dc, summary, Gfx.FONT_TINY, posY);
+            posY = writer.writeLines(dc, summary, Gfx.FONT_XTINY, posY);
 
             //y = height * 0.5;
             y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
