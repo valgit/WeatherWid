@@ -32,6 +32,10 @@ class WeatherAppView extends WatchUi.View {
     private var proba = null;
     private var writer = null;
 
+    private var hourly = null;
+
+    //private var fontA = null;
+
     function initialize() {
     	System.println("initialize");
         View.initialize();
@@ -121,6 +125,9 @@ class WeatherAppView extends WatchUi.View {
         height=dc.getHeight();
 
         writer = new WrapText();
+
+        // load custom font
+        //fontA = WatchUi.loadResource(Rez.Fonts.id_font_watch); 
     }
 
     // Called when this View is brought to the foreground. Restore
@@ -167,8 +174,8 @@ class WeatherAppView extends WatchUi.View {
         	freshen = -1;
         }
         var _timeString = "last update "+freshen.format("%.0f") + " m";
-        dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_XTINY,_timeString,Gfx.TEXT_JUSTIFY_CENTER);
-
+        dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_XTINY,_timeString,Gfx.TEXT_JUSTIFY_CENTER);         		
+ 		
         if (_status != 0) {
             dc.drawText(width * 0.5, height * 0.5,Gfx.FONT_XTINY,"waiting data...",Gfx.TEXT_JUSTIFY_CENTER);
         }
@@ -195,7 +202,7 @@ class WeatherAppView extends WatchUi.View {
 
             //y = height * 0.5;
             y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
-            _tempstr = "Wind:" + formatWindSpeed(windspeed) + " nd @ " + formatHeading(windbearing);
+            _tempstr = "Wind:" + formatWindSpeed(windspeed) + " nd @ " + formatHeading(windbearing) + "("+windbearing.format("%.0f")+")";
             // + " @ " +  / " + formatBeaufort(windspeed);
             dc.drawText(width * 0.25,y,
                 Gfx.FONT_XTINY,
@@ -215,6 +222,12 @@ class WeatherAppView extends WatchUi.View {
             //var _bfs = formatBeaufort(windspeed);
             //System.println("speed : "+ _bfs );
             */
+            if (hourly != null) {
+                // TODO : get current hour
+                drawHourly(dc,0 , height * 0.75,hourly[10]);                
+            }
+            
+
         }
     
         //gridOverlay(dc);
@@ -249,6 +262,17 @@ class WeatherAppView extends WatchUi.View {
         dc.drawLine (width * 0.75, 0, width * 0.75, height); 
         //System.println("wh : "+ width * 0.25 + " px , hh : " + height*0.25 + " px");
     }
+
+
+ function drawHourly(dc,x,y,hour) {
+        System.println("in drawHourly");
+        var _time=new Time.Moment(hour["time"]);
+        var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+        System.println("["+_current.day + " - "+_current.hour+":"+_current.min+"]");
+        System.println("icon: " + hour["icon"] + " T: " +hour["temperature"]+ " Pre : "+(hour["precipProbability"] * 100).format("%.0f"));
+        System.println("Wind: " + hour["windSpeed"] + "m/s P: " +hour["pressure"].format("%.0f")+ " hPa");
+        System.println("summary: " + hour["summary"]);
+ }
 
  function makeCurrentWeatherRequest() {
  		System.println("makeCurrentWeatherRequest");
@@ -351,9 +375,12 @@ function makeHourlyWeatherRequest() {
 		apparentTemperature = data["currently"]["apparentTemperature"];
 				 
         // check hourly data
+        // TODO: better way
         // first slot is actual time then next 24 hours
         System.println("next : "+data["hourly"]["summary"]);
         var _hdata = data["hourly"]["data"]; // table ?
+        hourly = data["hourly"]["data"];
+
         /*
         var _time=new Time.Moment(data["hourly"]["time"]);
         var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
