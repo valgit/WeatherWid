@@ -1,6 +1,6 @@
 using Toybox.WatchUi;
 
-class WeatherWidView extends WatchUi.View {
+class WeatherAppView extends WatchUi.View {
 
     function initialize() {
         View.initialize();
