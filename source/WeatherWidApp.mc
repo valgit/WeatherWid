@@ -18,8 +18,8 @@ class WeatherWidApp extends Application.AppBase {
     // Return the initial view of your application here
     function getInitialView() {
         //return [ new WeatherWidView() ];
-        return [ new WeatherAppView() ];
-        //return [ new WeatherAppView(), new WeatherAppDelegate() ];
+        //return [ new WeatherAppView() ];
+        return [ new WeatherAppView(), new WeatherAppDelegate() ];
     }
 
     function phoneConnected() {
