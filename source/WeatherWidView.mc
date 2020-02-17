@@ -276,73 +276,6 @@ class WeatherWidView extends WatchUi.View {
         System.println("summary: " + hour["summary"]);
  }
 
- function makeCurrentWeatherRequest() {
- 		System.println("makeCurrentWeatherRequest");
-        if (System.getDeviceSettings().phoneConnected) {
-
-            var appid = getAPIkey();              
-        
-            // currently,  daily, hourly
-            var params = {
-                    "units" => units,
-                    "lang" => "fr",
-                    "exclude" => "[minutely,hourly,daily,alerts,flags]"
-                    };
-
-            var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-    
-            var options = {
-                    :methods => Communications.HTTP_REQUEST_METHOD_GET,
-                    :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
-                    :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
-            };
-        
-            Communications.makeWebRequest(
-                    url,
-                    params,
-                    options,
-                    method(:receiveCurrentWeather));
-            _status = 1;
-        } else {
-            System.println("no phone connection");
-        }        
-        WatchUi.requestUpdate();
-    }
-
-function makeHourlyWeatherRequest() {
- 		System.println("makeCurrentWeatherRequest");
-        if (System.getDeviceSettings().phoneConnected) {
-
-            var appid = getAPIkey();              
-        
-            // currently,  daily, hourly
-            var params = {
-                    "units" => units,
-                    "lang" => "fr",
-                    "exclude" => "[minutely,daily,alerts,flags]"
-                    };
-
-            var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-    
-            var options = {
-                    :methods => Communications.HTTP_REQUEST_METHOD_GET,
-                    :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
-                    :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
-            };
-        
-            Communications.makeWebRequest(
-                    url,
-                    params,
-                    options,
-                    method(:receiveHourlyWeather));
-            _status = 1;
-        } else {
-            System.println("no phone connection");
-        }        
-        WatchUi.requestUpdate();
-    }
-
-
    
     // parse JSON weather data    
     function parseCurrentWeather(data) {
@@ -410,6 +343,103 @@ function makeHourlyWeatherRequest() {
     
     }
 
+
+    // map icon name to png
+    var iconIds = { 
+        "clear-day" => :clear_day,
+        "clear-night" => :clear_night,
+        "cloudy" => :cloudy,
+        "fog" => :fog,
+        "partly-cloudy-day" => :partly_cloudy_day,
+        "partly-cloudy-night" => :partly_cloudy_night,
+        "rain" => :rain,
+        "sleet" => :sleet,
+        "snow" => :snow,
+        "wind" => :wind
+    };
+
+  function getIcon(name) {
+    return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds[name]]});
+  }
+
+  function drawIcon(dc, x, y, symbol) {
+    var icon = getIcon(symbol);
+    icon.setLocation(x, y);
+    icon.draw(dc);
+    //var dim = icon.getDimensions();
+    //System.println("WxH : "+dim[0] + ","+dim[1]);
+    //dc.drawText(x,y,Gfx.FONT_SMALL,iconIds[symbol],Gfx.TEXT_JUSTIFY_CENTER);    
+  }
+ 
+
+    
+ function makeCurrentWeatherRequest() {
+ 		System.println("makeCurrentWeatherRequest");
+        if (System.getDeviceSettings().phoneConnected) {
+
+            var appid = getAPIkey();              
+        
+            // currently,  daily, hourly
+            var params = {
+                    "units" => units,
+                    "lang" => "fr",
+                    "exclude" => "[minutely,hourly,daily,alerts,flags]"
+                    };
+
+            var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
+    
+            var options = {
+                    :methods => Communications.HTTP_REQUEST_METHOD_GET,
+                    :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
+                    :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            };
+        
+            Communications.makeWebRequest(
+                    url,
+                    params,
+                    options,
+                    method(:receiveCurrentWeather));
+            _status = 1;
+        } else {
+            System.println("no phone connection");
+        }        
+        WatchUi.requestUpdate();
+    }
+
+function makeHourlyWeatherRequest() {
+ 		System.println("makeCurrentWeatherRequest");
+        if (System.getDeviceSettings().phoneConnected) {
+
+            var appid = getAPIkey();              
+        
+            // currently,  daily, hourly
+            var params = {
+                    "units" => units,
+                    "lang" => "fr",
+                    "exclude" => "[minutely,daily,alerts,flags]"
+                    };
+
+            var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
+    
+            var options = {
+                    :methods => Communications.HTTP_REQUEST_METHOD_GET,
+                    :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
+                    :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            };
+        
+            Communications.makeWebRequest(
+                    url,
+                    params,
+                    options,
+                    method(:receiveHourlyWeather));
+            _status = 1;
+        } else {
+            System.println("no phone connection");
+        }        
+        WatchUi.requestUpdate();
+    }
+
+
     function receiveCurrentWeather(responseCode, data) {
    		System.println("receiveCurrentWeather");
         if (responseCode == 200) {
@@ -470,41 +500,4 @@ function makeHourlyWeatherRequest() {
         WatchUi.requestUpdate();
     }
 
-    // map icon name to png
-    var iconIds = { 
-        "clear-day" => :clear_day,
-        "clear-night" => :clear_night,
-        "cloudy" => :cloudy,
-        "fog" => :fog,
-        "partly-cloudy-day" => :partly_cloudy_day,
-        "partly-cloudy-night" => :partly_cloudy_night,
-        "rain" => :rain,
-        "sleet" => :sleet,
-        "snow" => :snow,
-        "wind" => :wind
-    };
-
-
-  function getIcon(name) {
-    return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds[name]]});
-  }
-
-  function drawIcon(dc, x, y, symbol) {
-    var icon = getIcon(symbol);
-    icon.setLocation(x, y);
-    icon.draw(dc);
-    //var dim = icon.getDimensions();
-    //System.println("WxH : "+dim[0] + ","+dim[1]);
-    //dc.drawText(x,y,Gfx.FONT_SMALL,iconIds[symbol],Gfx.TEXT_JUSTIFY_CENTER);    
-  }
-
-  function getHour(date) {
-      /*
-    var _time=new Time.Moment(date);
-    var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
-    var hour = _current.hour;
-    */
-    var hour = Math.floor(date/3600);
-    return hour;
-  }
 }

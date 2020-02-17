@@ -95,3 +95,13 @@ function formatHeading(heading){
 
         return rose[index];
 }    
+
+function getHour(date) {
+      /*
+    var _time=new Time.Moment(date);
+    var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+    var hour = _current.hour;
+    */
+    var hour = Math.floor(date/3600);
+    return hour;
+}
