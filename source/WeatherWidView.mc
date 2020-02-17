@@ -20,7 +20,7 @@ class WeatherWidView extends WatchUi.View {
     private var _status = null;
 
 	//private var lastData;
-    private var lastFetchTime = null;
+    //private var lastFetchTime = null;
 
 	private var summary = null;
 	private var pressure = null;
@@ -60,11 +60,10 @@ class WeatherWidView extends WatchUi.View {
         // debug
         latitude = 50.4747;
         longitude = 3.061;
-        
-        var myapp = App.getApp();
+                
         var freshen = null;
         
-        lastFetchTime = getLastRefresh();
+        var lastFetchTime = getLastRefresh();
         if (lastFetchTime != null) {
             var _now = Time.now().value();
         	//freshen = _now - lastFetchTime;
@@ -167,7 +166,6 @@ class WeatherWidView extends WatchUi.View {
         //var timeString = Lang.format("$1$:$2$:$3$", [clockTime.hour, clockTime.min.format("%02d"), clockTime.sec.format("%02d")]);		
 		
 		//dc.drawText(width * 0.5, height * 0.12,Gfx.FONT_SMALL,timeString,Gfx.TEXT_JUSTIFY_CENTER);
-        var myapp = App.getApp();
         var freshen = 0;
         var lastFetchTime = getLastRefresh();
         if (lastFetchTime != null) {
@@ -247,7 +245,7 @@ class WeatherWidView extends WatchUi.View {
     function gridOverlay(dc) {
         dc.setPenWidth(1);		
         dc.setColor(0xFFFFFF, 0xFFFFFF);
-        var grid = 32;		
+        //var grid = 32;		
         /*
         for (var i=1; i< grid; i+=1){ 
             dc.drawLine (0, width*i/grid, width, height*i/grid); 					
@@ -444,15 +442,14 @@ function makeHourlyWeatherRequest() {
    		System.println("receiveCurrentWeather");
         if (responseCode == 200) {
              if (data instanceof Lang.String && data.equals("Forbidden")) {
-                var dict = { "msg" => "WRONG KEY" };
+                //var dict = { "msg" => "WRONG KEY" };
                 System.println("wrong API key");
                 //Background.exit(dict);
             } else {
                 if (data instanceof Dictionary) {                                    
-                    // TODO: persist receive data
-                    var myapp = App.getApp();
+                    // TODO: persist receive data                    
                     var lastData = data;
-                    lastFetchTime = Time.now().value();
+                    var lastFetchTime = Time.now().value();
                     //setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     _status = 0;
@@ -462,9 +459,8 @@ function makeHourlyWeatherRequest() {
         } else {
             System.println("Current weather response code " + responseCode);
             //maybe null !  + " message " + data.get("message"));   
-            //App.Storage.deleteValue(  
-            var myapp = App.getApp();    
-            lastFetchTime = null;                  
+            //App.Storage.deleteValue(              
+            var lastFetchTime = null;                  
             setLastRefresh(lastFetchTime);
         }
         WatchUi.requestUpdate();
@@ -474,15 +470,14 @@ function makeHourlyWeatherRequest() {
    		System.println("receiveHourlyWeather");
         if (responseCode == 200) {
              if (data instanceof Lang.String && data.equals("Forbidden")) {
-                var dict = { "msg" => "WRONG KEY" };
+                //var dict = { "msg" => "WRONG KEY" };
                 System.println("wrong API key");
                 //Background.exit(dict);
             } else {
                 if (data instanceof Dictionary) {                                    
-                    // TODO: persist receive data
-                    var myapp = App.getApp();
+                    // TODO: persist receive data                  
                     var lastData = data;
-                    lastFetchTime = Time.now().value();
+                    var lastFetchTime = Time.now().value();
                     //setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     _status = 0;
@@ -492,9 +487,8 @@ function makeHourlyWeatherRequest() {
         } else {
             System.println("Current weather response code " + responseCode);
             //maybe null !  + " message " + data.get("message"));   
-            //App.Storage.deleteValue(  
-            var myapp = App.getApp();    
-            lastFetchTime = null;                  
+            //App.Storage.deleteValue(              
+            var lastFetchTime = null;                  
             setLastRefresh(lastFetchTime);
         }
         WatchUi.requestUpdate();
