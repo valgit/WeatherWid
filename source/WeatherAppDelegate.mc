@@ -35,7 +35,7 @@ class WeatherAppDelegate extends WatchUi.BehaviorDelegate {
 
     function onMenu() {
         //WatchUi.pushView(new Rez.Menus.MainMenu(), new WeatherAppMenuDelegate(), WatchUi.SLIDE_UP);
-        WatchUi.pushView(new WeatherAppView(), new WeatherAppViewDelegate(), WatchUi.SLIDE_UP);
+        WatchUi.pushView(new WeatherAppView(), new WeatherAppViewDelegate(), WatchUi.SLIDE_RIGHT);
         return true;
     }
 
