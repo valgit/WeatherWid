@@ -84,16 +84,19 @@ function formatBeaufort(speed) {
 }
 
     // TODO: check value
-function formatHeading(heading){
-        //var sixteenthPI = Math.PI / 16.0;
-        //var sixteenthPI = 11.25;
+function formatHeading(heading){        
         var index = Math.floor(heading/22.5).toNumber();
         //System.println("test en deg : "+ index);
-        var rose = ["N","NNE","NE","ENE","E",
+        var _rosefr = ["N","NNE","NE","ENE","E",
                 "ESE","SE","SSE","S","SSO","SO",
                 "OSO","O","ONO","NO","NNO"];
 
-        return rose[index];
+        var _roseen = ["N","NNE","NE","ENE","E",
+                "ESE","SE","SSE","S","SSW","SW",
+                "WSW","W","WNW","NW","NNW"];
+
+        // TODO : add switch
+        return _rosefr[index];
 }    
 
 function getHour(date) {
