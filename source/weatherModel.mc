@@ -58,6 +58,10 @@ class weatherModel {
 
     private var hourly = null;
 
+    function initialize() {
+    	System.println("weather model initialize");
+    }
+
     function makeCurrentWeatherRequest() {
             System.println("makeCurrentWeatherRequest");
             if (System.getDeviceSettings().phoneConnected) {
