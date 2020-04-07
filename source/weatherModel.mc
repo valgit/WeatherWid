@@ -44,24 +44,56 @@ class weatherModel {
     private var latitude = null;
 	private var longitude = null;
 
-    private var _status = null;
+    var status = null;
 
-	private var summary = null;
-	private var pressure = null;
-    private var temperature = null;
-    private var windspeed = null;
-    private var windbearing = null;
-    private var weathericon = null;
-	private var apparentTemperature = null;
-    private var proba = null;
-    private var writer = null;
+	// publish data
+	var summary = null;
+	var pressure = null;
+    var temperature = null;
+    var windspeed = null;
+    var windbearing = null;
+    var weathericon = null;
+	var apparentTemperature = null;
+    var proba = null;
+    var writer = null;
 
-    private var hourly = null;
+    var hourly = null;
 
     function initialize() {
     	System.println("weather model initialize");
+        latitude = 50.4747;
+        longitude = 3.061;
+        status = 0;
+        units =(System.getDeviceSettings().temperatureUnits==System.UNIT_STATUTE) ? "us" : "si";
+        
+        System.println("units : " + units);
     }
 
+    function setPosition(_latitude,_longitude) {
+        latitude = _latitude;
+        longitude = _longitude;
+    }
+
+    function setLocation(lon,lat) {
+        latitude = lat;
+        longitude = lon;
+    }
+
+   function freshness() {
+        var freshen = null;
+        
+        var lastFetchTime = getLastRefresh();
+        if (lastFetchTime != null) {
+            var _now = Time.now().value();
+        	//freshen = _now - lastFetchTime;
+            //System.println("now h : "+getHour(_now)+" / last : "+getHour(lastFetchTime));
+            freshen = getHour(_now) - getHour(lastFetchTime);            
+        } else {
+        	freshen = 24;
+        }
+        return freshen;
+    }
+    
     function makeCurrentWeatherRequest() {
             System.println("makeCurrentWeatherRequest");
             if (System.getDeviceSettings().phoneConnected) {
@@ -76,7 +108,7 @@ class weatherModel {
                         };
 
                 var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-        
+        		System.println("makeCurrentWeatherRequest " + longitude + "," + latitude);
                 var options = {
                         :methods => Communications.HTTP_REQUEST_METHOD_GET,
                         :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
@@ -87,8 +119,7 @@ class weatherModel {
                         url,
                         params,
                         options,
-                        method(:receiveCurrentWeather));
-                _status = 1;
+                        method(:receiveCurrentWeather));                
             } else {
                 System.println("no phone connection");
             }        
@@ -96,7 +127,7 @@ class weatherModel {
     }   
 
     function makeHourlyWeatherRequest() {
- 		System.println("makeCurrentWeatherRequest");
+ 		System.println("makeHourlyWeatherRequest");
         if (System.getDeviceSettings().phoneConnected) {
 
             var appid = getAPIkey();              
@@ -109,7 +140,7 @@ class weatherModel {
                     };
 
             var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-    
+    		System.println("makeHourlyWeatherRequest " + longitude + "," + latitude);
             var options = {
                     :methods => Communications.HTTP_REQUEST_METHOD_GET,
                     :headers => {"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
@@ -120,14 +151,31 @@ class weatherModel {
                     url,
                     params,
                     options,
-                    method(:receiveHourlyWeather));
-            _status = 1;
+                    method(:receiveHourlyWeather));            
         } else {
             System.println("no phone connection");
         }        
         WatchUi.requestUpdate();
     }
 
+
+	 // parse JSON weather data    
+    function parseCurrentWeather(data) {
+        // currently => {visibility=>16.093000, windBearing=>260, precipIntensity=>0, 
+        // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
+        // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
+        // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
+        summary = data["currently"]["summary"];
+        pressure = data["currently"]["pressure"];
+        temperature = data["currently"]["temperature"];
+        windspeed = data["currently"]["windSpeed"];
+        windbearing = data["currently"]["windBearing"];
+        weathericon = data["currently"]["icon"];
+		proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["currently"]["apparentTemperature"];				   
+        status = 1;
+    }
+	
 
     function receiveCurrentWeather(responseCode, data) {
    		System.println("receiveCurrentWeather");
@@ -141,9 +189,9 @@ class weatherModel {
                     // TODO: persist receive data                  
                     var lastData = data;
                     var lastFetchTime = Time.now().value();
-                    //setLastData(lastData);
+                    setLastData(lastData);
                     setLastRefresh(lastFetchTime);
-                    _status = 0;
+                    
                     parseCurrentWeather(data);
                 }   
             }
@@ -152,11 +200,60 @@ class weatherModel {
             //maybe null !  + " message " + data.get("message"));   
             //App.Storage.deleteValue(  
             var lastFetchTime = null;                  
-            setLastRefresh(lastFetchTime);
+            setLastRefresh(lastFetchTime);            
         }
         WatchUi.requestUpdate();
     }
 
+    // parse JSON weather data
+    function parseHourlyWeather(data) {
+        // currently => {visibility=>16.093000, windBearing=>260, precipIntensity=>0, 
+        // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
+        // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
+        // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
+        summary = data["currently"]["summary"];
+        pressure = data["currently"]["pressure"];
+        temperature = data["currently"]["temperature"];
+        windspeed = data["currently"]["windSpeed"];
+        windbearing = data["currently"]["windBearing"];
+        weathericon = data["currently"]["icon"];
+		proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["currently"]["apparentTemperature"];
+				 
+        // check hourly data
+        // TODO: better way
+        // first slot is actual time then next 24 hours
+        System.println("next : "+data["hourly"]["summary"]);
+        var _hdata = data["hourly"]["data"]; // table ?
+        hourly = data["hourly"]["data"];
+
+        /*
+        var _time=new Time.Moment(data["hourly"]["time"]);
+        var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+        System.println(_current.hour+":"+_current.min);
+        */
+        // Print the arguments duplicated and returned 
+        /*
+        var keys = _hdata.keys();
+        for( var i = 0; i < keys.size(); i++ ) {
+            //mMessage += Lang.format("$1$: $2$\n", [keys[i], args[keys[i]]]);
+            System.println(keys[i] + " => " + data[keys[i]]);
+        }
+        */
+
+        var _time;
+        var _current;
+        for(var i = 0; i<25;i++) {
+            //System.println(i+" : "+_hdata[i]);
+            _time=new Time.Moment(_hdata[i]["time"]);
+            _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+            System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
+            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+(_hdata[i]["precipProbability"] * 100)+
+            	" summary: " + _hdata[i]["summary"]);
+        }
+        status = 1;
+    }
+    
     function receiveHourlyWeather(responseCode, data) {
    		System.println("receiveHourlyWeather");
         if (responseCode == 200) {
@@ -169,9 +266,9 @@ class weatherModel {
                     // TODO: persist receive data
                     var lastData = data;
                     var lastFetchTime = Time.now().value();
-                    //setLastData(lastData);
+                    setLastData(lastData);
                     setLastRefresh(lastFetchTime);
-                    _status = 0;
+                    
                     parseHourlyWeather(data);
                 }   
             }

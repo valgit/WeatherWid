@@ -28,14 +28,33 @@
 using Toybox.WatchUi;
 
 class WeatherAppDelegate extends WatchUi.BehaviorDelegate {
+	private var _model = null;
 
-    function initialize() {
+    function initialize(model) {
         BehaviorDelegate.initialize();
+		_model = model;
+    }
+
+	// should map to on_select ?
+	function onTap(clickEvent) {
+		System.println("WeatherAppDelegate - onTap");
+		return false;
+	}
+
+ 	function onSelect() {
+        System.println("WeatherAppDelegate - onSelect");
+		var mView = new WeatherAppView(_model);
+        WatchUi.pushView(mView, new WeatherAppViewDelegate(_model, mView), WatchUi.SLIDE_RIGHT);
+        //return false; // allow InputDelegate function to be called
+        return true;
     }
 
     function onMenu() {
-        //WatchUi.pushView(new Rez.Menus.MainMenu(), new WeatherAppMenuDelegate(), WatchUi.SLIDE_UP);
-        WatchUi.pushView(new WeatherAppView(), new WeatherAppViewDelegate(), WatchUi.SLIDE_RIGHT);
+        //WatchUi.pushView(new Rez.Menus.MainMenu(), new WeatherAppMenuDelegate(), WatchUi.SLIDE_UP);		
+		// TODO: use self ?
+		System.println("WeatherAppDelegate - onMenu - create");
+		var mView = new WeatherAppView(_model);
+        WatchUi.pushView(mView, new WeatherAppViewDelegate(_model, mView), WatchUi.SLIDE_RIGHT);
         return true;
     }
 
