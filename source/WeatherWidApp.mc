@@ -27,7 +27,8 @@
 using Toybox.Application;
 
 class WeatherWidApp extends Application.AppBase {
-  
+    private var _model;
+
     function initialize() {
         AppBase.initialize();
     }
@@ -45,7 +46,9 @@ class WeatherWidApp extends Application.AppBase {
     function getInitialView() {
         //return [ new WeatherWidView() ];
         //return [ new WeatherAppView() ];
-        return [ new WeatherWidView(), new WeatherAppDelegate() ];
+        //return [ new WeatherWidView(), new WeatherAppDelegate() ];
+        _model = new weatherModel();
+        return [ new WeatherWidView(_model), new WeatherAppDelegate(_model) ];
     }
 
     function phoneConnected() {
