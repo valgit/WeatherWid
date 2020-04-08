@@ -43,7 +43,7 @@ class WeatherAppView extends WatchUi.View {
     private var _scrollpos = null;
 
     function initialize(model) {
-        System.println("view app initialize");
+        //System.println("view app initialize");
         View.initialize();
         _model = model;
         _scrollpos = 0;
@@ -52,7 +52,7 @@ class WeatherAppView extends WatchUi.View {
     // Load your resources here
     function onLayout(dc) {
         //setLayout(Rez.Layouts.MainLayout(dc));
-        System.println("view app onLayout");
+        //System.println("view app onLayout");
         mWidth=dc.getWidth();
         mHeight=dc.getHeight();
     }
@@ -61,7 +61,7 @@ class WeatherAppView extends WatchUi.View {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() {
-        System.println("view app onShow");
+        //System.println("view app onShow");
     }
 
     // Update the view
@@ -97,7 +97,7 @@ class WeatherAppView extends WatchUi.View {
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() {
-        System.println("view app onHide");
+        //System.println("view app onHide");
     }
 
     function drawHourly(dc,x,y,hour) {
@@ -170,12 +170,12 @@ class WeatherAppView extends WatchUi.View {
  }
 
     function scrollup() {
-        _scrollpos += 180;
+        _scrollpos += 100;
         WatchUi.requestUpdate();
     }
 
        function scrolldown() {
-        _scrollpos -= 180;
+        _scrollpos -= 100;
         WatchUi.requestUpdate();
     }
 }
@@ -197,16 +197,21 @@ class WeatherAppViewDelegate extends WatchUi.BehaviorDelegate {
         return true;
     }
 
+    // back 
+    function onBack() {
+        WatchUi.popView(WatchUi.SLIDE_LEFT);
+        return true;
+    }
     // scroll down
 	function onNextPage() {
-        System.println("WeatherAppViewDelegate scroll down");
+        //System.println("WeatherAppViewDelegate scroll down");
         _view.scrolldown();
         
         return true;       
     }
 
     function onPreviousPage() {
-        System.println("WeatherAppViewDelegate scroll up");
+        //System.println("WeatherAppViewDelegate scroll up");
         _view.scrollup();
         
         return true;

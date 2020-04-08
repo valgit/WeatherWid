@@ -66,7 +66,7 @@ class weatherModel {
         status = 0;
         units =(System.getDeviceSettings().temperatureUnits==System.UNIT_STATUTE) ? "us" : "si";
         
-        System.println("units : " + units);
+        //System.println("units : " + units);
     }
 
     function setPosition(_latitude,_longitude) {
@@ -189,7 +189,7 @@ class weatherModel {
                     // TODO: persist receive data                  
                     var lastData = data;
                     var lastFetchTime = Time.now().value();
-                    setLastData(lastData);
+                    //TODO: setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     
                     parseCurrentWeather(data);
@@ -266,7 +266,7 @@ class weatherModel {
                     // TODO: persist receive data
                     var lastData = data;
                     var lastFetchTime = Time.now().value();
-                    setLastData(lastData);
+                    //TODO setLastData(lastData);
                     setLastRefresh(lastFetchTime);
                     
                     parseHourlyWeather(data);
