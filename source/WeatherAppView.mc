@@ -85,8 +85,8 @@ class WeatherAppView extends WatchUi.View {
                 //var _hour = _now.hour;
                 //System.println("now is : " + _hour);
                 //var now = Time.now();
-                for(var h = 0; h < 8; h++) {
-                    drawHourly(dc,mWidth * 0.1 , _scrollpos + h * 64 ,_model.hourly[h]);
+                for(var h = 0; h < 24; h++) {
+                    drawHourly(dc,mWidth * 0.1 , _scrollpos + h * 85 /*64*/ ,_model.hourly[h]);
                 }
         }
             
@@ -128,28 +128,30 @@ class WeatherAppView extends WatchUi.View {
 
         var yo = y;
         dc.drawText(x+ 25 , y,
-                Gfx.FONT_NUMBER_MILD,
+                Gfx.FONT_SYSTEM_XTINY,
+                //Gfx.FONT_NUMBER_MILD,
                 _current.hour,
                 Gfx.TEXT_JUSTIFY_LEFT);
         
-        var _w = dc.getTextWidthInPixels("99", Gfx.FONT_NUMBER_MILD) +30;
+        var _w = dc.getTextWidthInPixels("99", Gfx.FONT_SYSTEM_XTINY) +30;
 
         var _tempstr = hour["temperature"].format("%.0f")+ "° " +hour["pressure"].format("%.0f")+ " hPa";
         dc.drawText(x+ _w , y,
-                Gfx.FONT_SYSTEM_XTINY,
+                Gfx.FONT_SYSTEM_TINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
         
-        y = y + Graphics.getFontHeight(Gfx.FONT_SYSTEM_XTINY);
-        _tempstr = formatWindSpeed(hour["windSpeed"]) + "nds @ " + hour["windBearing"].format("%.0f");
+        y = y + Graphics.getFontHeight(Gfx.FONT_SYSTEM_TINY);
+        _tempstr = formatWindSpeed(hour["windSpeed"]) + " nds @ " + hour["windBearing"].format("%.0f");
         dc.drawText(x+ _w , y,
-                Gfx.FONT_SYSTEM_XTINY,
+                Gfx.FONT_SYSTEM_TINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
 
         //System.println("icon: " + hour["icon"] + " Pre : "+);
         //System.println();
-        y = yo + Graphics.getFontHeight(Gfx.FONT_NUMBER_MILD);
+        //y = yo + Graphics.getFontHeight(Gfx.FONT_NUMBER_MILD);
+        y = y + Graphics.getFontHeight(Gfx.FONT_SYSTEM_TINY);
         dc.drawText(x+ 25 , y,
                 Gfx.FONT_SYSTEM_XTINY,
                 hour["summary"],
@@ -165,6 +167,7 @@ class WeatherAppView extends WatchUi.View {
                 Gfx.TEXT_JUSTIFY_LEFT);
         */
         //_tempstr = "Feels " + _model.apparentTemperature.format("%.0f") + "°";
+        System.println("delta : " + (y-yo));
         y = y + Graphics.getFontHeight(Gfx.FONT_NUMBER_MEDIUM);
         return y;
  }
