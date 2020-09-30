@@ -167,18 +167,24 @@ class WeatherAppView extends WatchUi.View {
                 Gfx.TEXT_JUSTIFY_LEFT);
         */
         //_tempstr = "Feels " + _model.apparentTemperature.format("%.0f") + "°";
-        System.println("delta : " + (y-yo));
+        //System.println("delta : " + (y-yo));
         y = y + Graphics.getFontHeight(Gfx.FONT_NUMBER_MEDIUM);
         return y;
  }
 
     function scrollup() {
         _scrollpos += 100;
+        if (_scrollpos> 1900) {  // 24*80 ?
+            _scrollpos = 1900;
+        }
         WatchUi.requestUpdate();
     }
 
        function scrolldown() {
         _scrollpos -= 100;
+        if (_scrollpos< 0) {
+            _scrollpos = 0;
+        } 
         WatchUi.requestUpdate();
     }
 }
