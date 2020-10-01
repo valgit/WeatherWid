@@ -142,7 +142,7 @@ class weatherModel {
 */
             var params = { };
             
-            https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
+            //https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
             //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
             var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid;
     		System.println("makeHourlyWeatherRequest " + longitude + "," + latitude);
