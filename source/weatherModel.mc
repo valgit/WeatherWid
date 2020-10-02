@@ -101,13 +101,15 @@ class weatherModel {
                 var appid = getAPIkey();              
             
                 // currently,  daily, hourly
-                var params = {
+                var params = {/*
                         "units" => units,
                         "lang" => "fr",
                         "exclude" => "[minutely,hourly,daily,alerts,flags]"
+                        */
                         };
 
-                var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
+                //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
+                var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr";    			
         		System.println("makeCurrentWeatherRequest " + longitude + "," + latitude);
                 var options = {
                         :methods => Communications.HTTP_REQUEST_METHOD_GET,
@@ -144,7 +146,7 @@ class weatherModel {
             
             //https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
             //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-            var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid;
+            var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr";
     		System.println("makeHourlyWeatherRequest " + longitude + "," + latitude);
             var options = {
                     :methods => Communications.HTTP_REQUEST_METHOD_GET,
