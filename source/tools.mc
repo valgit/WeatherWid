@@ -161,5 +161,6 @@ var iconIds = {
     };
 
 function getIcon(name) {
-    return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds[name]]});
+	return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds["rain"]]});
+    //return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds[name]]});
 }

@@ -77,16 +77,19 @@ class WeatherWidView extends WatchUi.View {
         //_status = 0;
         if (freshen >= 1) { // TODO: check value
                 System.println("(too old) Fetching weather data on startup " + freshen);                
-                _model.makeHourlyWeatherRequest();               
+                //_model.makeHourlyWeatherRequest();               
+                _model.makeCurrentWeatherRequest();
         } else {                
                 System.println("using current weather data");
                 var data = getLastData();
                 if (data != null) {
                     //parseCurrentWeather(data);
-                    _model.parseHourlyWeather(data);
+                   // _model.parseHourlyWeather(data);
+                   _model.makeCurrentWeatherRequest();
                 } else {
                     System.println("(no data) Fetching weather data on startup " + freshen);                
-                    _model.makeHourlyWeatherRequest();               
+                    //_model.makeHourlyWeatherRequest();
+                    _model.makeCurrentWeatherRequest();               
                 }
         }              
         /*
@@ -185,6 +188,7 @@ class WeatherWidView extends WatchUi.View {
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
                 
+                /* TODO:
             y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
             var _proba = _model.proba * 100;
             _tempstr = _model.pressure.format("%.0f") + " hPa Hum: " + _proba.format("%.0f")+ " %";
@@ -192,7 +196,7 @@ class WeatherWidView extends WatchUi.View {
                 Gfx.FONT_XTINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
-
+*/
             //writer.testFit(posY);  // start scrolling ?
             /*          
             //var _bfs = formatBeaufort(windspeed);

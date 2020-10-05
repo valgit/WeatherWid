@@ -109,7 +109,7 @@ class weatherModel {
                         };
 
                 //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-                var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr";    			
+                var url = "https://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr";    			
         		System.println("makeCurrentWeatherRequest " + longitude + "," + latitude);
                 var options = {
                         :methods => Communications.HTTP_REQUEST_METHOD_GET,
@@ -172,14 +172,16 @@ class weatherModel {
         // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
         // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
         // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
-        summary = data["currently"]["summary"];
-        pressure = data["currently"]["pressure"];
-        temperature = data["currently"]["temperature"];
-        windspeed = data["currently"]["windSpeed"];
-        windbearing = data["currently"]["windBearing"];
-        weathericon = data["currently"]["icon"];
-		proba = data["currently"]["precipProbability"];
-		apparentTemperature = data["currently"]["apparentTemperature"];				   
+        //System.println(data["weather"]["description"]);
+        summary = "legere pluie";
+        summary = data["weather"]["description"];
+        pressure = data["main"]["pressure"];
+        temperature = data["main"]["temp"];
+        windspeed = data["wind"]["speed"];
+        windbearing = data["wind"]["deg"];
+        //weathericon = data["weather"]["icon"];
+		//proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["main"]["feels_like"];				   
         status = 1;
     }
 	
