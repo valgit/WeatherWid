@@ -173,13 +173,21 @@ class weatherModel {
         // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
         // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
         //System.println(data["weather"]["description"]);
-        summary = "legere pluie";
-        summary = data["weather"]["description"];
+        
+        // test status ?
+        /*
+        if (data["weather"]["description"] instanceof Lang.String ) {
+        	summary = data["weather"]["description"]; 
+        } else {
+        	summary = "legere pluie";
+        }
+        */
+        summary = data["weather"][0]["main"];
         pressure = data["main"]["pressure"];
         temperature = data["main"]["temp"];
         windspeed = data["wind"]["speed"];
         windbearing = data["wind"]["deg"];
-        //weathericon = data["weather"]["icon"];
+        weathericon = data["weather"][0]["icon"];
 		//proba = data["currently"]["precipProbability"];
 		apparentTemperature = data["main"]["feels_like"];				   
         status = 1;
