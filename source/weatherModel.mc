@@ -150,12 +150,19 @@ class weatherModel {
                     "exclude" => "[minutely,daily,alerts,flags]"
                     };
 */
-            var params = { };
+            var params = { 
+            	"lat" => latitude,
+                    "lon" => longitude,
+                    "appid" => appid,
+                    "units" => "metric",
+                    "lang" => "fr",
+                    "exclude" => "minutely,hourly,alerts"
+                  };
             
             //https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
             //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
             // 
-            var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr&exclude=minutely,hourly,alerts";
+            var url = "https://api.openweathermap.org/data/2.5/onecall";
     		System.println("makeHourlyWeatherRequest " + longitude + "," + latitude);
             var options = {
                     :methods => Communications.HTTP_REQUEST_METHOD_GET,

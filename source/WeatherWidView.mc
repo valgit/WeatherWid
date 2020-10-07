@@ -77,19 +77,19 @@ class WeatherWidView extends WatchUi.View {
         //_status = 0;
         if (freshen >= 1) { // TODO: check value
                 System.println("(too old) Fetching weather data on startup " + freshen);                
-                //_model.makeHourlyWeatherRequest();               
-                _model.makeCurrentWeatherRequest();
+                _model.makeHourlyWeatherRequest();               
+                //_model.makeCurrentWeatherRequest();
         } else {                
                 System.println("using current weather data");
                 var data = getLastData();
                 if (data != null) {
                     //parseCurrentWeather(data);
-                   //_model.parseHourlyWeather(data);
-                   _model.makeCurrentWeatherRequest();
+                   _model.parseHourlyWeather(data);
+                   //_model.makeCurrentWeatherRequest();
                 } else {
                     System.println("(no data) Fetching weather data on startup " + freshen);                
-                    //_model.makeHourlyWeatherRequest();
-                    _model.makeCurrentWeatherRequest();               
+                    _model.makeHourlyWeatherRequest();
+                    //_model.makeCurrentWeatherRequest();               
                 }
         }              
         /*
