@@ -101,15 +101,23 @@ class weatherModel {
                 var appid = getAPIkey();              
             
                 // currently,  daily, hourly
+                /*
                 var params = {/*
                         "units" => units,
                         "lang" => "fr",
                         "exclude" => "[minutely,hourly,daily,alerts,flags]"
-                        */
+                        
                         };
-
+                */
+                var params = {
+                    "lat" => latitude,
+                    "lon" => longitude,
+                    "appid" => appid,
+                    "units" => "metric",
+                    "lang" => "fr"
+                };
                 //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-                var url = "https://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr";    			
+                var url = "https://api.openweathermap.org/data/2.5/weather";
         		System.println("makeCurrentWeatherRequest " + longitude + "," + latitude);
                 var options = {
                         :methods => Communications.HTTP_REQUEST_METHOD_GET,
@@ -146,7 +154,8 @@ class weatherModel {
             
             //https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
             //var url = "https://api.darksky.net/forecast/"+appid+"/"+latitude+","+longitude;
-            var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr";
+            // 
+            var url = "https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&appid="+appid+"&units=metric&lang=fr&exclude=minutely,hourly,alerts";
     		System.println("makeHourlyWeatherRequest " + longitude + "," + latitude);
             var options = {
                     :methods => Communications.HTTP_REQUEST_METHOD_GET,
@@ -228,19 +237,20 @@ class weatherModel {
         // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
         // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
         // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
-        summary = data["currently"]["summary"];
-        pressure = data["currently"]["pressure"];
-        temperature = data["currently"]["temperature"];
-        windspeed = data["currently"]["windSpeed"];
-        windbearing = data["currently"]["windBearing"];
-        weathericon = data["currently"]["icon"];
-		proba = data["currently"]["precipProbability"];
-		apparentTemperature = data["currently"]["apparentTemperature"];
+        
+        summary = data["current"]["weather"][0]["main"];
+        pressure = data["current"]["main"]["pressure"];
+        temperature = data["current"]["main"]["temp"];
+        windspeed = data["current"]["wind"]["speed"];
+        windbearing = data["current"]["wind"]["deg"];
+        weathericon = data["current"]["weather"][0]["icon"];
+		//proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["current"]["main"]["feels_like"];	
 				 
         // check hourly data
         // TODO: better way
         // first slot is actual time then next 24 hours
-        System.println("next : "+data["hourly"]["summary"]);
+        System.println("next : "+data["hourly"]["weather"][0]["main"]);
         var _hdata = data["hourly"]["data"]; // table ?
         hourly = data["hourly"]["data"];
 

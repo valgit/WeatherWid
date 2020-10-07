@@ -147,6 +147,8 @@ function drawIcon(dc, x, y, symbol) {
 }
 
 // map icon name to png
+// darksky
+/*
 var iconIds = { 
         "clear-day" => :clear_day,
         "clear-night" => :clear_night,
@@ -159,8 +161,22 @@ var iconIds = {
         "snow" => :snow,
         "wind" => :wind
     };
-
+*/
+var iconIds = { 
+        "01d" => :clear_day,
+        "01n" => :clear_night,
+        "03d" => :cloudy,
+        "04d" => :cloudy,
+        "50d" => :fog,
+        "02d" => :partly_cloudy_day,
+        "02n" => :partly_cloudy_night,
+        "10d" => :rain,
+        "sleet" => :sleet,
+        "13d" => :snow,
+        "wind" => :wind
+    };
+// openweather
 function getIcon(name) {
-	return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds["rain"]]});
-    //return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds[name]]});
+    //return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds["rain"]]});
+    return new WatchUi.Bitmap({:rezId=>Rez.Drawables[iconIds[name]]});
 }

@@ -84,7 +84,7 @@ class WeatherWidView extends WatchUi.View {
                 var data = getLastData();
                 if (data != null) {
                     //parseCurrentWeather(data);
-                   // _model.parseHourlyWeather(data);
+                   //_model.parseHourlyWeather(data);
                    _model.makeCurrentWeatherRequest();
                 } else {
                     System.println("(no data) Fetching weather data on startup " + freshen);                
