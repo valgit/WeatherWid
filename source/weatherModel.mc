@@ -156,7 +156,7 @@ class weatherModel {
                     "appid" => appid,
                     "units" => "metric",
                     "lang" => "fr",
-                    "exclude" => "minutely,hourly,alerts"
+                    "exclude" => "current,minutely,daily,alerts"
                   };
             
             //https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API key}
@@ -244,22 +244,26 @@ class weatherModel {
         // apparentTemperature=>6.060000, summary=>Ciel Nuageux, precipProbability=>0, humidity=>0.870000, 
         // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
         // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
+        // no current ?
         
-        summary = data["current"]["weather"][0]["main"];
-        pressure = data["current"]["main"]["pressure"];
-        temperature = data["current"]["main"]["temp"];
-        windspeed = data["current"]["wind"]["speed"];
-        windbearing = data["current"]["wind"]["deg"];
+        summary = data["current"]["weather"][0]["description"];
         weathericon = data["current"]["weather"][0]["icon"];
-		//proba = data["currently"]["precipProbability"];
-		apparentTemperature = data["current"]["main"]["feels_like"];	
+        
+        pressure = data["current"]["pressure"];
+        temperature = data["current"]["temp"];
+        windspeed = data["current"]["wind_speed"];
+        windbearing = data["current"]["wind_deg"];
+        //proba = data["currently"]["precipProbability"];
+		apparentTemperature = data["current"]["feels_like"];	
+		no current */
 				 
         // check hourly data
         // TODO: better way
         // first slot is actual time then next 24 hours
-        System.println("next : "+data["hourly"]["weather"][0]["main"]);
-        var _hdata = data["hourly"]["data"]; // table ?
-        hourly = data["hourly"]["data"];
+        // [daily] ?
+        System.println("next : "+data["hourly"][0]["weather"][0]["main"]);
+        var _hdata = data["hourly"]; // table ?
+        //hourly = data["hourly"]["data"];
 
         /*
         var _time=new Time.Moment(data["hourly"]["time"]);
@@ -279,11 +283,13 @@ class weatherModel {
         var _current;
         for(var i = 0; i<25;i++) {
             //System.println(i+" : "+_hdata[i]);
-            _time=new Time.Moment(_hdata[i]["time"]);
+            _time=new Time.Moment(_hdata[i]["dt"]);
             _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
             System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
-            System.println("icon: " + _hdata[i]["icon"] + " T: " +_hdata[i]["temperature"]+ " Pre : "+(_hdata[i]["precipProbability"] * 100)+
-            	" summary: " + _hdata[i]["summary"]);
+            System.println("icon: " + _hdata[i]["weather"][0]["icon"] + 
+            	" T: " +_hdata[i]["temp"] + 
+            	" Pre : "+(_hdata[i]["humidity"] )  +
+            	" summary: " + _hdata[i]["weather"][0]["main"]);
         }
         status = 1;
     }
