@@ -35,7 +35,7 @@ using Toybox.Time.Gregorian;
 /* 
  * this view display hourly weather data
  */
-class WeatherAppView extends WatchUi.View {
+class WeatherHourView extends WatchUi.View {
     private var mWidth;
     private var mHeight;
 
@@ -190,12 +190,12 @@ class WeatherAppView extends WatchUi.View {
 }
 
 
-class WeatherAppViewDelegate extends WatchUi.BehaviorDelegate {
+class WeatherHourViewDelegate extends WatchUi.BehaviorDelegate {
 	private var _model;
     private var _view;
 	
     function initialize(model,view) {
-        System.println("WeatherAppViewDelegate - view delegate init");
+        System.println("WeatherHourViewDelegate - view delegate init");
         BehaviorDelegate.initialize();
         _model = model;
         _view = view;
@@ -213,14 +213,14 @@ class WeatherAppViewDelegate extends WatchUi.BehaviorDelegate {
     }
     // scroll down
 	function onNextPage() {
-        //System.println("WeatherAppViewDelegate scroll down");
+        //System.println("WeatherHourViewDelegate scroll down");
         _view.scrolldown();
         
         return true;       
     }
 
     function onPreviousPage() {
-        //System.println("WeatherAppViewDelegate scroll up");
+        //System.println("WeatherHourViewDelegate scroll up");
         _view.scrollup();
         
         return true;
