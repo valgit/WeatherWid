@@ -187,28 +187,20 @@ class WeatherWidView extends WatchUi.View {
                 Gfx.FONT_XTINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
-                
-                /* TODO:
+                            
             y = y + Graphics.getFontHeight(Gfx.FONT_XTINY);
             var _proba = _model.proba * 100;
-            _tempstr = _model.pressure.format("%.0f") + " hPa Hum: " + _proba.format("%.0f")+ " %";
+            _tempstr = _model.pressure.format("%.0f") + " hPa"; //  Hum: " + _proba.format("%.0f")+ " %";
             dc.drawText(width * 0.25,y,
                 Gfx.FONT_XTINY,
                 _tempstr,
                 Gfx.TEXT_JUSTIFY_LEFT);
-*/
+
             //writer.testFit(posY);  // start scrolling ?
             /*          
             //var _bfs = formatBeaufort(windspeed);
             //System.println("speed : "+ _bfs );
             */
-            /*
-            if (hourly != null) {
-                // TODO : get current hour
-                drawHourly(dc,0 , height * 0.75,hourly[10]);                
-            }
-            */
-
         }
     
         //gridOverlay(dc);
@@ -243,50 +235,6 @@ class WeatherWidView extends WatchUi.View {
         dc.drawLine (width * 0.75, 0, width * 0.75, height); 
         //System.println("wh : "+ width * 0.25 + " px , hh : " + height*0.25 + " px");
     }
-
-/*
- function drawHourly(dc,x,y,hour) {
-        System.println("in drawHourly");
-        var _time=new Time.Moment(hour["time"]);
-        var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
-        System.println("["+_current.day + " - "+_current.hour+":"+_current.min+"]");
-        System.println("icon: " + hour["icon"] + " T: " +hour["temperature"]+ " Pre : "+(hour["precipProbability"] * 100).format("%.0f"));
-        System.println("Wind: " + hour["windSpeed"] + "m/s P: " +hour["pressure"].format("%.0f")+ " hPa");
-        System.println("summary: " + hour["summary"]);
- }
-*/
-
-/* samples
-       // debug
-        /*
-        summary = "Ciel Couvert";
-        pressure = 1021.3;
-        temperature = 5.12;
-        windspeed = 7.7;
-        windbearing = 294;
-        weathericon = "cloudy";
-        apparentTemperature = 8;
-        */
-        /*
-        summary = "Ciel Dégagé";
-        pressure = 1036.3;
-        temperature = 3.22;
-        windspeed = 0.83;
-        windbearing = 331;
-        weathericon = "clear-day";
-        apparentTemperature = 3.22;
-    */
-    /*
-     	summary = "Vent moyen commençant dans la matinée, se prolongeant jusqu’à ce soir.";
-        pressure = 1008.9;
-        temperature = 5.02;
-        windspeed = 8.85;
-        windbearing = 261;
-        weathericon = "clear-day";
-        apparentTemperature = -0.06;
-        proba = 0.06;
-		_status = 0;
-	*/
 
  
 }

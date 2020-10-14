@@ -43,8 +43,8 @@ class WeatherAppDelegate extends WatchUi.BehaviorDelegate {
 
  	function onSelect() {
         System.println("WeatherAppDelegate - onSelect");
-		var mView = new WeatherAppView(_model);
-        WatchUi.pushView(mView, new WeatherAppViewDelegate(_model, mView), WatchUi.SLIDE_RIGHT);
+		var mView = new WeatherHourView(_model);
+        WatchUi.pushView(mView, new WeatherHourViewDelegate(_model, mView), WatchUi.SLIDE_RIGHT);
         //return false; // allow InputDelegate function to be called
         return true;
     }
@@ -53,8 +53,8 @@ class WeatherAppDelegate extends WatchUi.BehaviorDelegate {
         //WatchUi.pushView(new Rez.Menus.MainMenu(), new WeatherAppMenuDelegate(), WatchUi.SLIDE_UP);		
 		// TODO: use self ?
 		System.println("WeatherAppDelegate - onMenu - create");
-		var mView = new WeatherAppView(_model);
-        WatchUi.pushView(mView, new WeatherAppViewDelegate(_model, mView), WatchUi.SLIDE_RIGHT);
+		var mView = new WeatherHourView(_model);
+        WatchUi.pushView(mView, new WeatherHourViewDelegate(_model, mView), WatchUi.SLIDE_RIGHT);
         return true;
     }
 

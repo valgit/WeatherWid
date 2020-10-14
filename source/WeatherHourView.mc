@@ -43,7 +43,7 @@ class WeatherHourView extends WatchUi.View {
     private var _scrollpos = null;
 
     function initialize(model) {
-        //System.println("view app initialize");
+        System.println("view hour initialize");
         View.initialize();
         _model = model;
         _scrollpos = 0;
@@ -66,7 +66,7 @@ class WeatherHourView extends WatchUi.View {
 
     // Update the view
     function onUpdate(dc) {
-        System.println("view app onUpdate");
+        System.println("view hour onUpdate");
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
           
@@ -90,7 +90,7 @@ class WeatherHourView extends WatchUi.View {
                 }
         }
             
-        System.println("view app onUpdate - out");
+        System.println("view hour onUpdate - out");
     }
 
     // Called when this View is removed from the screen. Save the
@@ -100,8 +100,20 @@ class WeatherHourView extends WatchUi.View {
         //System.println("view app onHide");
     }
 
+/*
     function drawHourly(dc,x,y,hour) {
-        //System.println("in drawHourly " + x + "," + y);        
+        System.println("in drawHourly");
+        var _time=new Time.Moment(hour["time"]);
+        var _current = Gregorian.info(_time, Time.FORMAT_MEDIUM);
+        System.println("["+_current.day + " - "+_current.hour+":"+_current.min+"]");
+        System.println("icon: " + hour["icon"] + " T: " +hour["temperature"]+ " Pre : "+(hour["precipProbability"] * 100).format("%.0f"));
+        System.println("Wind: " + hour["windSpeed"] + "m/s P: " +hour["pressure"].format("%.0f")+ " hPa");
+        System.println("summary: " + hour["summary"]);
+ }
+*/
+
+    function drawHourly(dc,x,y,hour) {
+        System.println("in drawHourly " + x + "," + y);        
         
         //var _precip = (hour["precipProbability"] * 100);
         // shade of blue, white = no precip
