@@ -245,7 +245,7 @@ class weatherModel {
         // uvIndex=>0, cloudCover=>0.700000, dewPoint=>7.630000, icon=>partly-cloudy-day,
         // ozone=>343.899994, pressure=>1007.800000, temperature=>9.730000, time=>1580569580, windGust=>17.040001, windSpeed=>9.030000}
         // no current ?
-        
+        /*
         summary = data["current"]["weather"][0]["description"];
         weathericon = data["current"]["weather"][0]["icon"];
         
