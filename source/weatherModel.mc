@@ -288,8 +288,12 @@ class weatherModel {
             System.println(i + " => "+_current.day + " - "+_current.hour+":"+_current.min);
             System.println("icon: " + _hdata[i]["weather"][0]["icon"] + 
             	" T: " +_hdata[i]["temp"] + 
-            	" Pre : "+(_hdata[i]["humidity"] )  +
+            	" Pre : "+(_hdata[i]["pressure"] )  +
+    	        " hum : "+(_hdata[i]["humidity"] )  +
             	" summary: " + _hdata[i]["weather"][0]["main"]);
+            hourly[i]["temp"]=_hdata[i]["temp"];
+            hourly[i]["pressure"]=_hdata[i]["pressure"];
+            hourly[i]["humidity"]=_hdata[i]["humidity"];
         }
         status = 1;
     }
